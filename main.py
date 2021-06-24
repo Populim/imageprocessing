@@ -36,22 +36,6 @@ def normalize(A):
 	return A
 
 
-# Função 1: Filtering 1D
-def F1(A,F):
-	N = A.shape[0] # size of img
-	n = F.shape[0] # size of filter
-	size = N*N
-	B = A.reshape(size)
-	B = np.pad(B,n//2,mode='wrap')
-	C = np.zeros(size)
-
-	for i in range(size):
-		C[i] = np.dot(F,B[i:i+n])
-
-	C = normalize(C)
-	C = C.reshape((N,N))
-	return C
-
 
 # Função 2: Filtering 2D
 def F2(A,F):
@@ -62,25 +46,10 @@ def F2(A,F):
 
 	for i in range(N):
 		for j in range(N):
-			C[i,j] = np.sum(np.matmul(F,B[i:i+n,j:j+n]))
+			C[i,j] = np.sum(F * B[i:i+n,j:j+n])
 			
 	C = normalize(C)
 	return C
-
-
-# Função 3: Median Filter
-def F3(A,n):
-	N = A.shape[0] # size of img
-	B = np.pad(A,n//2,mode='wrap')
-	C = np.zeros((N,N))
-
-	for i in range(N):
-		for j in range(N):
-			C[i,j] = np.median(B[i:i+n,j:j+n])
-			
-	C = normalize(C)
-	return C
-
 
 
 #Main: lemos parâmetros e abrimos pelo imageio
@@ -100,21 +69,80 @@ def main():
 
 	img_hsv = mpl.colors.rgb_to_hsv(A)
 
+	teste = 1-img_hsv[:,:,1]
 
-	fig = plt.figure(figsize=(15,10))
-	fig.add_subplot(221)
-	plt.imshow(A)
 
-	fig.add_subplot(222)
-	plt.imshow(img_hsv[:,:,0])
+	# filtrox = np.array([[1,0,-1],[2,0,-2],[1,0,-1]])
+	# print(filtrox)
 
-	fig.add_subplot(223)
-	plt.imshow(img_hsv[:,:,1])
+	# filtroy = np.array([[1,2,1],[0,0,0],[-1,-2,-1]])
+	# print(filtroy)
 
-	fig.add_subplot(224)
-	plt.imshow(img_hsv[:,:,2])
+	# Cx = F2(teste,filtrox)
+
+	# Cy = F2(teste,filtroy)	
+
+
+	# fig = plt.figure(figsize=(15,10))
+
+	# fig.add_subplot(221)
+	# plt.imshow(teste,cmap='gray')
+
+
+	# fig.add_subplot(222)
+	# plt.imshow(Cx,cmap='gray')
+
+	# fig.add_subplot(223)
+	# plt.imshow(Cy,cmap='gray')
+
+	# C = np.sqrt(np.power(Cy,2) + np.power(Cx,2))
+	# C = normalize(C)
+	# fig.add_subplot(224)
+	# plt.imshow(C,cmap='gray')
+
+	# plt.show()
+
+
+	# print(teste.min(),teste.max())
+
+	f_tr = np.ones(teste.shape).astype(np.uint8)
+	# setting to 0 the pixels below the threshold
+	f_tr[np.where(teste < 0.94)] = 0
+
+	plt.imshow(f_tr,cmap='gray')
+	plt.show()
+
+
+
+	# f, (ax1, ax2) = plt.subplots(2)
+	# cnts, bins = np.histogram(teste, bins='auto')
+	# ax1.bar(bins[:-1] + np.diff(bins) / 2, cnts, np.diff(bins))
+	# ax2.hist(teste, bins='auto')
+
+	# hist,_ = np.histogram(teste, bins=20)
+	# plt.bar(np.linspace(0.0, 1.0, num=20), hist)
 
 	plt.show()
+
+	plt.imshow(img_hsv[:,:,1],cmap='gray')
+	plt.show()
+
+
+
+	# fig = plt.figure(figsize=(15,10))
+	# fig.add_subplot(221)
+	# plt.imshow(A)
+
+	# fig.add_subplot(222)
+	# plt.imshow(img_hsv[:,:,0])
+
+	# fig.add_subplot(223)
+	# plt.imshow(img_hsv[:,:,1])
+
+	# fig.add_subplot(224)
+	# plt.imshow(img_hsv[:,:,2])
+
+	# plt.show()
 
 
 	# F = int(input())
