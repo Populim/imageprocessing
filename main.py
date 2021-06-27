@@ -25,6 +25,12 @@ def rmse(A,B):
 	return (np.sqrt(erro))/N
 
 
+def normalize_one(A):
+	a = A.min()
+	b = A.max()
+	A = ((A-a)/(b-a))
+	return A
+
 
 # Normaliza uma matriz para o range [0,255] e 
 # converte para uint8
@@ -35,7 +41,11 @@ def normalize(A):
 	A = A.astype(np.uint8)
 	return A
 
-
+def gamma_correction(A,gamma):
+	B = np.zeros((A.shape))
+	B = 255*(np.power(A/255.0,1.0/gamma))
+	B = normalize(B)
+	return B
 
 # Função 2: Filtering 2D
 def F2(A,F):
@@ -51,119 +61,58 @@ def F2(A,F):
 	C = normalize(C)
 	return C
 
+def get_average_filter(A):
+	N = A.shape[0] # size of img
+	n = 100
+	C = np.zeros((N//n,N//n),dtype=np.float32)
 
-#Main: lemos parâmetros e abrimos pelo imageio
-#os arquivos a serem processados e comparados, em seguida
-#chamamos a operação requisitada
+
+	for i in range(N//n):
+		for j in range(N//n):
+			C[i,j] = np.average(A[i*n:(i+1)*n,j*n:(j+1)*n])
+
+
+	C = np.kron(C,np.ones((n,n)))
+
+	return C
+
+
 def main():
-	#print("digite o nome")
-	#name1 = input().rstrip()
 	name1 = "img10.png"
 	A = imageio.imread(name1)
 
 	print(A.shape)
-
-	# print(A[:10,:10,0])
-	# print(A[:10,:10,1])
-	# print(A[:10,:10,2])
 
 	img_hsv = mpl.colors.rgb_to_hsv(A)
 
 	teste = 1-img_hsv[:,:,1]
 
 
-	# filtrox = np.array([[1,0,-1],[2,0,-2],[1,0,-1]])
-	# print(filtrox)
+	media = get_average_filter(teste)
 
-	# filtroy = np.array([[1,2,1],[0,0,0],[-1,-2,-1]])
-	# print(filtroy)
-
-	# Cx = F2(teste,filtrox)
-
-	# Cy = F2(teste,filtroy)	
+	teste = normalize_one(teste - media)
+	print(teste)
+	teste_gamma = gamma_correction(teste,0.8)
+	print(teste_gamma)
 
 
-	# fig = plt.figure(figsize=(15,10))
-
-	# fig.add_subplot(221)
-	# plt.imshow(teste,cmap='gray')
-
-
-	# fig.add_subplot(222)
-	# plt.imshow(Cx,cmap='gray')
-
-	# fig.add_subplot(223)
-	# plt.imshow(Cy,cmap='gray')
-
-	# C = np.sqrt(np.power(Cy,2) + np.power(Cx,2))
-	# C = normalize(C)
-	# fig.add_subplot(224)
-	# plt.imshow(C,cmap='gray')
-
-	# plt.show()
-
-
-	# print(teste.min(),teste.max())
+	valor = img_hsv[:,:,2]
+	print(valor, "aqui em cima")
+	print("aqui")
 
 	f_tr = np.ones(teste.shape).astype(np.uint8)
 	# setting to 0 the pixels below the threshold
-	f_tr[np.where(teste < 0.94)] = 0
+	# f_tr = A[:,:,0]
+	A[(np.where((teste_gamma > 180) & (valor < 200) & (valor > 90)))] = [255,0,0]
 
-	plt.imshow(f_tr,cmap='gray')
+	plt.imshow(A)
 	plt.show()
 
 
 
-	# f, (ax1, ax2) = plt.subplots(2)
-	# cnts, bins = np.histogram(teste, bins='auto')
-	# ax1.bar(bins[:-1] + np.diff(bins) / 2, cnts, np.diff(bins))
-	# ax2.hist(teste, bins='auto')
-
-	# hist,_ = np.histogram(teste, bins=20)
-	# plt.bar(np.linspace(0.0, 1.0, num=20), hist)
-
-	plt.show()
-
-	plt.imshow(img_hsv[:,:,1],cmap='gray')
 	plt.show()
 
 
-
-	# fig = plt.figure(figsize=(15,10))
-	# fig.add_subplot(221)
-	# plt.imshow(A)
-
-	# fig.add_subplot(222)
-	# plt.imshow(img_hsv[:,:,0])
-
-	# fig.add_subplot(223)
-	# plt.imshow(img_hsv[:,:,1])
-
-	# fig.add_subplot(224)
-	# plt.imshow(img_hsv[:,:,2])
-
-	# plt.show()
-
-
-	# F = int(input())
-	# n = int(input())
-	# if (F == 1):
-	# 	filtro = np.zeros(n)
-	# 	aux = input().split()
-	# 	for i in range(n):
-	# 		filtro[i] = float(aux[i])
-	# 	C = F1(A,filtro)
-	# elif (F == 2):
-	# 	filtro = np.zeros((n,n))
-	# 	for i in range(n):
-	# 		aux = input().split()
-	# 		for j in range(n):
-	# 			filtro[i,j] = float(aux[j])
-	# 	C = F2(A,filtro)		
-	# elif(F == 3):
-	# 	C = F3(A,n)
-
-	# print(rmse(A,C))
 
 
 if __name__ == '__main__':
