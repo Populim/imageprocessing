@@ -7,7 +7,7 @@ Repo for the Digital Image Processing course taken on 2021.
 
 #### Bruno Baldissera
 #### Bruno Gazoni - 7585037
-#### Matheus Populim
+#### Matheus Populim 10734710
 #### Rafael Ceneme
 
 # The main objective of the project
