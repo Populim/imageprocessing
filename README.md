@@ -7,6 +7,10 @@ imageprocessing
 
 
 
+The input images can be found in the following kaggle dataset:
+
+https://www.kaggle.com/deeenizka/road-segmentation
+
 
 
 Nachmany, Yoni & Alemohammad, Hamed. (2019). Detecting Roads from Satellite Imagery in the Developing World. 
