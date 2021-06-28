@@ -39,7 +39,7 @@ We first implemented a simple threshold function in a few test images and saw it
 
 As a first output to this step of the project, we've been able to generate this image, using the methods cited above, with the exception of the border detection filter:
 
-![Output](https://github.com/Populim/imageprocessing/blob/main/output_perfect.png?raw=true)
+![Output](https://github.com/Populim/imageprocessing/blob/main/output_first_trial.png?raw=true)
 
 # References
 
