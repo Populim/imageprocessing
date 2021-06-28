@@ -38,6 +38,8 @@ We first implemented a simple threshold function in a few test images and saw it
 * A border detection filter (first as a standalone test, but we expected to use this a stepping stone, applying in the future some transformation that would better use the border detection for the final goal, maybe a sort of flood fill).
 
 
+![Output](https://github.com/Populim/imageprocessing/blob/main/output_perfect.png?raw=true)
+
 # References
 
 Nachmany, Yoni & Alemohammad, Hamed. (2019). Detecting Roads from Satellite Imagery in the Developing World. 
