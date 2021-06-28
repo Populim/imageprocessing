@@ -5,7 +5,7 @@ Repository for the Digital Image Processing course (SCC0251).
 # image-processing
 Repo for the Digital Image Processing course taken on 2021.
 
-#### Bruno Baldissera
+#### Bruno Baldissera - 10724351
 #### Bruno Gazoni - 7585037
 #### Matheus Populim 10734710
 #### Rafael Ceneme 9898610
@@ -37,7 +37,7 @@ We first implemented a simple threshold function in a few test images and saw it
 * A gamma filter to spread the distribution of the saturation values.
 * A border detection filter (first as a standalone test, but we expected to use this a stepping stone, applying in the future some transformation that would better use the border detection for the final goal, maybe a sort of flood fill).
 
-As a first output to this step of the project, we've been able to generate this image:
+As a first output to this step of the project, we've been able to generate this image, using the methods cited above, with the exception of the border detection filter:
 
 ![Output](https://github.com/Populim/imageprocessing/blob/main/output_perfect.png?raw=true)
 
