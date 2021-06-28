@@ -33,7 +33,8 @@ However, for our purposes we were interested in finding a more simple baseline f
 We first implemented a simple threshold function in a few test images and saw it as a good direction to follow. Then we tried combining the threshold filter with other methods, looking for progress in the outlining of our region of interest. We performed trials using:
 
 * The manipulation of the saturation of the image using its HSV representation, in order to further differentiate the road pixels from the rest.
-* A gamma filter.
+* The separation between the shade of gray closer to the roads and another ones (caused by shadows or excessive light) by the V value of HSV image representation. 
+* A gamma filter to spread the distribution of the saturation values.
 * A border detection filter (first as a standalone test, but we expected to use this a stepping stone, applying in the future some transformation that would better use the border detection for the final goal, maybe a sort of flood fill).
 
 
