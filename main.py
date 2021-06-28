@@ -25,6 +25,12 @@ def rmse(A,B):
 	return (np.sqrt(erro))/N
 
 
+def normalize_one(A):
+	a = A.min()
+	b = A.max()
+	A = ((A-a)/(b-a))
+	return A
+
 
 # Normaliza uma matriz para o range [0,255] e 
 # converte para uint8
@@ -35,23 +41,11 @@ def normalize(A):
 	A = A.astype(np.uint8)
 	return A
 
-
-# Função 1: Filtering 1D
-def F1(A,F):
-	N = A.shape[0] # size of img
-	n = F.shape[0] # size of filter
-	size = N*N
-	B = A.reshape(size)
-	B = np.pad(B,n//2,mode='wrap')
-	C = np.zeros(size)
-
-	for i in range(size):
-		C[i] = np.dot(F,B[i:i+n])
-
-	C = normalize(C)
-	C = C.reshape((N,N))
-	return C
-
+def gamma_correction(A,gamma):
+	B = np.zeros((A.shape))
+	B = 255*(np.power(A/255.0,1.0/gamma))
+	B = normalize(B)
+	return B
 
 # Função 2: Filtering 2D
 def F2(A,F):
@@ -62,80 +56,63 @@ def F2(A,F):
 
 	for i in range(N):
 		for j in range(N):
-			C[i,j] = np.sum(np.matmul(F,B[i:i+n,j:j+n]))
+			C[i,j] = np.sum(F * B[i:i+n,j:j+n])
 			
 	C = normalize(C)
 	return C
 
-
-# Função 3: Median Filter
-def F3(A,n):
+def get_average_filter(A):
 	N = A.shape[0] # size of img
-	B = np.pad(A,n//2,mode='wrap')
-	C = np.zeros((N,N))
+	n = 100
+	C = np.zeros((N//n,N//n),dtype=np.float32)
 
-	for i in range(N):
-		for j in range(N):
-			C[i,j] = np.median(B[i:i+n,j:j+n])
-			
-	C = normalize(C)
+
+	for i in range(N//n):
+		for j in range(N//n):
+			C[i,j] = np.average(A[i*n:(i+1)*n,j*n:(j+1)*n])
+
+
+	C = np.kron(C,np.ones((n,n)))
+
 	return C
 
 
-
-#Main: lemos parâmetros e abrimos pelo imageio
-#os arquivos a serem processados e comparados, em seguida
-#chamamos a operação requisitada
 def main():
-	#print("digite o nome")
-	#name1 = input().rstrip()
 	name1 = "img10.png"
 	A = imageio.imread(name1)
 
 	print(A.shape)
 
-	# print(A[:10,:10,0])
-	# print(A[:10,:10,1])
-	# print(A[:10,:10,2])
-
 	img_hsv = mpl.colors.rgb_to_hsv(A)
 
+	teste = 1-img_hsv[:,:,1]
 
-	fig = plt.figure(figsize=(15,10))
-	fig.add_subplot(221)
+
+	media = get_average_filter(teste)
+
+	teste = normalize_one(teste - media)
+	print(teste)
+	teste_gamma = gamma_correction(teste,0.8)
+	print(teste_gamma)
+
+
+	valor = img_hsv[:,:,2]
+	print(valor, "aqui em cima")
+	print("aqui")
+
+	f_tr = np.ones(teste.shape).astype(np.uint8)
+	# setting to 0 the pixels below the threshold
+	# f_tr = A[:,:,0]
+	A[(np.where((teste_gamma > 180) & (valor < 200) & (valor > 90)))] = [255,0,0]
+
 	plt.imshow(A)
+	plt.show()
 
-	fig.add_subplot(222)
-	plt.imshow(img_hsv[:,:,0])
 
-	fig.add_subplot(223)
-	plt.imshow(img_hsv[:,:,1])
-
-	fig.add_subplot(224)
-	plt.imshow(img_hsv[:,:,2])
 
 	plt.show()
 
 
-	# F = int(input())
-	# n = int(input())
-	# if (F == 1):
-	# 	filtro = np.zeros(n)
-	# 	aux = input().split()
-	# 	for i in range(n):
-	# 		filtro[i] = float(aux[i])
-	# 	C = F1(A,filtro)
-	# elif (F == 2):
-	# 	filtro = np.zeros((n,n))
-	# 	for i in range(n):
-	# 		aux = input().split()
-	# 		for j in range(n):
-	# 			filtro[i,j] = float(aux[j])
-	# 	C = F2(A,filtro)		
-	# elif(F == 3):
-	# 	C = F3(A,n)
-
-	# print(rmse(A,C))
 
 
 if __name__ == '__main__':
