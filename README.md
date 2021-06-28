@@ -37,6 +37,7 @@ We first implemented a simple threshold function in a few test images and saw it
 * A gamma filter to spread the distribution of the saturation values.
 * A border detection filter (first as a standalone test, but we expected to use this a stepping stone, applying in the future some transformation that would better use the border detection for the final goal, maybe a sort of flood fill).
 
+As a first output to this step of the project, we've been able to generate this image:
 
 ![Output](https://github.com/Populim/imageprocessing/blob/main/output_perfect.png?raw=true)
 
